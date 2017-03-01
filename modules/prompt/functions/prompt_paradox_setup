@@ -19,6 +19,7 @@ pmodload 'helper'
 # Define variables.
 _prompt_paradox_current_bg='NONE'
 _prompt_paradox_segment_separator='Ϯ'
+_prompt_paradox_http_separator='ϮϮϮϮϮϮϮ'
 _prompt_paradox_start_time=$SECONDS
 
 function prompt_paradox_start_segment {
@@ -30,7 +31,11 @@ function prompt_paradox_start_segment {
   else
     print -n "$bg$fg "
   fi
-  _prompt_paradox_current_bg="$1"
+  if [[ $http_proxy ]]; then 
+    _prompt_paradox_current_bg="${_prompt_paradox_http_seprator}$1"
+  else
+    _prompt_paradox_current_bg="$1"
+  fi
   [[ -n "$3" ]] && print -n "$3"
 }
 

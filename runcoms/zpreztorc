@@ -193,3 +193,5 @@ else
     alias ls="${aliases[ls]:-ls} -F"
   fi
 fi
+
+setopt pushdminus

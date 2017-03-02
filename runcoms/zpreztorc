@@ -195,4 +195,6 @@ else
 fi
 
 setopt pushdminus
+setopt PUSHD_IGNORE_DUPS
+
 alias dv="dirs -v"

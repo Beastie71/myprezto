@@ -196,5 +196,6 @@ fi
 
 setopt pushdminus
 setopt PUSHD_IGNORE_DUPS
+unsetopt sharehistory
 
 alias dv="dirs -v"

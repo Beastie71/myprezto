@@ -217,3 +217,21 @@ function sshnp() {
    echo "You must specify a host."
  fi
 }
+
+function sshdev() {
+
+  if [ -n "$1" ];
+  then
+    thehost=`grep $1 ~/vde/dev.list | awk '{print $1}'`
+    thename=`grep $1 ~/vde/dev.list | awk '{print $2}'`
+    if [ -n "$thehost" ];
+    then
+      echo "Connecting to $thename"
+      ssh -o ConnectTimeout=10 -q -t -i ~/vde/Docker-Dev.pem ec2-user@$thehost
+    else
+      echo "Host not found"
+   fi
+ else 
+   echo "You must specify a host."
+ fi
+}

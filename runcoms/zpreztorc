@@ -206,10 +206,11 @@ function sshnp() {
   then
     thehost=`grep $1 ~/vde/np.list | awk '{print $1}'`
     thename=`grep $1 ~/vde/np.list | awk '{print $2}'`
+    shift;
     if [ -n "$thehost" ];
     then
       echo "Connecting to $thename"
-      ssh -o ConnectTimeout=10 -q -t -i ~/vde/Docker-NonProd.pem ec2-user@$thehost
+      ssh -o ConnectTimeout=10 -q -t -i ~/vde/Docker-NonProd.pem ec2-user@$thehost "$@"
     else
       echo "Host not found"
    fi
@@ -227,7 +228,8 @@ function sshdev() {
     if [ -n "$thehost" ];
     then
       echo "Connecting to $thename"
-      ssh -o ConnectTimeout=10 -q -t -i ~/vde/Docker-Dev.pem ec2-user@$thehost
+      shift
+      ssh -o ConnectTimeout=10 -q -t -i ~/vde/Docker-Dev.pem ec2-user@$thehost "$@"
     else
       echo "Host not found"
    fi

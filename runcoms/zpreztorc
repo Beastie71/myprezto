@@ -282,3 +282,22 @@ function sshdev() {
    echo "You must specify a host."
  fi
 }
+
+function sshps() {
+
+  if [ -n "$1" ];
+  then
+    thehost=`grep $1 ~/vde/prod-shared.list | awk '{print $1}'`
+    thename=`grep $1 ~/vde/prod-shared.list | awk '{print $2}'`
+    if [ -n "$thehost" ];
+    then
+      echo "Connecting to $thename"
+      shift
+      ssh -o ConnectTimeout=10 -q -t -i ~/vde/Docker_ProdShared.pem ec2-user@$thehost "$@"
+    else
+      echo "Host not found"
+   fi
+ else 
+   echo "You must specify a host."
+ fi
+}

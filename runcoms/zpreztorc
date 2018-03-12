@@ -141,6 +141,8 @@ zstyle ':prezto:module:syntax-highlighting' styles \
 
 # Terminal
 #
+zstyle ':prezto:module:syntax-highlighting' pattern \
+   'rm*-rf*' 'fg=white,bold,bg=red'
 
 # Auto set the tab and window titles.
 zstyle ':prezto:module:terminal' auto-title 'yes'
@@ -154,6 +156,8 @@ zstyle ':prezto:module:terminal:tab-title' format '%m: %s'
 #
 # Tmux
 #
+# Set the terminal multiplexer title format.
+zstyle ':prezto:module:terminal:multiplexer-title' format '%s'
 
 # Auto start a session when Zsh is launched in a local terminal.
 # zstyle ':prezto:module:tmux:auto-start' local 'yes'
@@ -214,7 +218,7 @@ function sshnp() {
     else
       echo "Host not found"
    fi
- else 
+ else
    echo "You must specify a host."
  fi
 }
@@ -239,7 +243,7 @@ function scpnpto() {
     else
       echo "Host not found"
    fi
- else 
+ else
    echo "You must specify a host."
  fi
 }
@@ -259,7 +263,7 @@ function scpnpfrom() {
     else
       echo "Host not found"
    fi
- else 
+ else
    echo "You must specify a host."
  fi
 }
@@ -278,7 +282,7 @@ function sshdev() {
     else
       echo "Host not found"
    fi
- else 
+ else
    echo "You must specify a host."
  fi
 }
@@ -297,7 +301,17 @@ function sshps() {
     else
       echo "Host not found"
    fi
- else 
+ else
    echo "You must specify a host."
  fi
+}
+
+function kubelsc() {
+
+  if [ -n "$1" ];
+  then
+    kubectl get pods -n $1  -o jsonpath="{.items[*].spec.containers[*].name}" | tr " " "\n"
+  else
+    echo "You must specify a namespace."
+  fi
 }

@@ -167,10 +167,10 @@ zstyle ':prezto:module:terminal:multiplexer-title' format '%s'
 # zstyle ':prezto:module:tmux:auto-start' local 'yes'
 
 # Auto start a session when Zsh is launched in a SSH connection.
-zstyle ':prezto:module:tmux:auto-start' remote 'yes'
+#zstyle ':prezto:module:tmux:auto-start' remote 'yes'
 
 # Integrate with iTerm2.
-zstyle ':prezto:module:tmux:iterm' integrate 'yes'
+#zstyle ':prezto:module:tmux:iterm' integrate 'yes'
 
 if [[ `type "$foobar_command_name" > /dev/null` ]]; then
   # GNU Core Utilities
@@ -207,6 +207,7 @@ setopt PUSHD_IGNORE_DUPS
 unsetopt sharehistory
 
 alias dv="dirs -v"
+alias lslast=`ls -lt *(.om[1,10])`
 
 function sshnp() {
 
@@ -214,6 +215,25 @@ function sshnp() {
   then
     thehost=`grep $1 ~/vde/np.list | awk '{print $1}'`
     thename=`grep $1 ~/vde/np.list | awk '{print $2}'`
+    shift;
+    if [ -n "$thehost" ];
+    then
+      echo "Connecting to $thename"
+      ssh -o ConnectTimeout=10 -q -t -i ~/vde/Docker-NonProd.pem ec2-user@$thehost "$@"
+    else
+      echo "Host not found"
+   fi
+ else
+   echo "You must specify a host."
+ fi
+}
+
+function sshnpa() {
+
+  if [ -n "$1" ];
+  then
+    thehost=`grep $1 ~/vde/npa.list | awk '{print $1}'`
+    thename=`grep $1 ~/vde/npa.list | awk '{print $2}'`
     shift;
     if [ -n "$thehost" ];
     then

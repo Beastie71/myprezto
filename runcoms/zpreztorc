@@ -228,6 +228,25 @@ function sshnp() {
  fi
 }
 
+function sshnpa() {
+
+  if [ -n "$1" ];
+  then
+    thehost=`grep $1 ~/vde/npa.list | awk '{print $1}'`
+    thename=`grep $1 ~/vde/npa.list | awk '{print $2}'`
+    shift;
+    if [ -n "$thehost" ];
+    then
+      echo "Connecting to $thename"
+      ssh -o ConnectTimeout=10 -q -t -i ~/vde/Docker-NonProd.pem ec2-user@$thehost "$@"
+    else
+      echo "Host not found"
+   fi
+ else
+   echo "You must specify a host."
+ fi
+}
+
 function scpnpto() {
 
   if [ -n "$1" ];

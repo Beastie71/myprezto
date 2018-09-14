@@ -81,7 +81,7 @@ zstyle ':prezto:module:history-substring-search:color' found ''
 # zstyle ':prezto:module:history-substring-search:color' not-found ''
 
 # Set the search globbing flags.
-zstyle ':prezto:module:history-substring-search' globbing-flags ''
+zstyle ':prezto:module:history-substring-search:color' globbing-flags ''
 
 #
 # Pacman
@@ -170,7 +170,8 @@ zstyle ':prezto:module:terminal:multiplexer-title' format '%s'
 #zstyle ':prezto:module:tmux:auto-start' remote 'yes'
 
 # Integrate with iTerm2.
-#zstyle ':prezto:module:tmux:iterm' integrate 'yes'
+zstyle ':prezto:module:tmux:iterm' integrate 'yes'
+zstyle ':prezto:module:tmux:session' name 'BaseSession'
 
 if [[ `type "$foobar_command_name" > /dev/null` ]]; then
   # GNU Core Utilities

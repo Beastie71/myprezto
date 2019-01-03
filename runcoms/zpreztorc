@@ -35,8 +35,8 @@ zstyle ':prezto:load' pmodule \
   'spectrum' \
   'utility' \
   'completion' \
-  'fasd' \
   'git' \
+  'syntax-highlighting' \
   'prompt'
 
 #
@@ -54,7 +54,7 @@ zstyle ':prezto:module:autosuggestions:color' found ''
 zstyle ':prezto:module:editor' key-bindings 'emacs'
 
 # Auto convert .... to ../..
-# zstyle ':prezto:module:editor' dot-expansion 'yes'
+zstyle ':prezto:module:editor' dot-expansion 'yes'
 
 #
 # Git
@@ -140,8 +140,8 @@ zstyle ':prezto:module:syntax-highlighting' highlighters \
 # Set syntax highlighting styles.
 zstyle ':prezto:module:syntax-highlighting' styles \
   'builtin' 'bg=blue' \
-  'command' 'bg=green' \
-  'function' 'bg=yellow'
+  'command' 'fg=green' \
+  'function' 'fg=yellow'
 
 # Terminal
 #
@@ -149,7 +149,7 @@ zstyle ':prezto:module:syntax-highlighting' pattern \
    'rm*-rf*' 'fg=white,bold,bg=red'
 
 # Auto set the tab and window titles.
-zstyle ':prezto:module:terminal' auto-title 'yes'
+zstyle ':prezto:module:terminal' auto-title 'always'
 
 # Set the window title format.
 zstyle ':prezto:module:terminal:window-title' format '%n@%m: %s'
@@ -203,12 +203,22 @@ else
   fi
 fi
 
-setopt pushdminus
-setopt PUSHD_IGNORE_DUPS
-unsetopt sharehistory
-
 alias dv="dirs -v"
 alias lslast=`ls -lt *(.om[1,10])`
+
+####################
+# Module Option Setopt
+####################
+
+setopt pushdminus
+setopt PUSHD_IGNORE_DUPS
+setopt AUTO_PARAM_SLASH
+setopt AUTO_PUSHD
+setopt INTERACTIVE_COMMENTS
+setopt HIST_IGNORE_ALL_DUPS
+setopt INC_APPEND_HISTORY
+
+unsetopt sharehistory
 
 function sshnp() {
 

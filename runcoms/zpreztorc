@@ -204,7 +204,6 @@ else
 fi
 
 alias dv="dirs -v"
-alias lslast=`ls -lt *(.om[1,10])`
 
 ####################
 # Module Option Setopt
@@ -219,23 +218,6 @@ setopt HIST_IGNORE_ALL_DUPS
 setopt INC_APPEND_HISTORY
 
 unsetopt sharehistory
-
-function prompt_paradox_start_segment {
-  local bg fg
-  [[ -n "$1" ]] && bg="%K{$1}" || bg="%k"
-  [[ -n "$2" ]] && fg="%F{$2}" || fg="%f"
-  if [[ "$_prompt_paradox_current_bg" != 'NONE' && "$1" != "$_prompt_paradox_current_bg" ]]; then
-    print -n " $bg%F{$_prompt_paradox_current_bg}$_prompt_paradox_segment_separator$fg "
-  else
-    print -n "$bg$fg "
-  fi
-  if [[ $http_proxy ]]; then
-    _prompt_paradox_current_bg="${_prompt_paradox_http_seprator}$1"
-  else
-    _prompt_paradox_current_bg="$1"
-  fi
-  [[ -n "$3" ]] && print -n "$3"
-}
 
 function sshnp() {
 

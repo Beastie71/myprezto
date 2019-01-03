@@ -8,7 +8,6 @@
 #   Isaac Wolkerstorfer <i@agnoster.net>
 #   Jeff Sandberg <paradox460@gmail.com>
 #   Sorin Ionescu <sorin.ionescu@gmail.com>
-#   Patrick Bos <egpbos@gmail.com>
 #
 # Screenshots:
 #   http://i.imgur.com/0XIWX.png
@@ -19,7 +18,8 @@ pmodload 'helper'
 
 # Define variables.
 _prompt_paradox_current_bg='NONE'
-_prompt_paradox_segment_separator=''
+_prompt_paradox_segment_separator='Ϯ'
+_prompt_paradox_http_separator='ϮϮϮϮϮϮϮ'
 _prompt_paradox_start_time=$SECONDS
 
 function prompt_paradox_start_segment {
@@ -31,7 +31,11 @@ function prompt_paradox_start_segment {
   else
     print -n "$bg$fg "
   fi
-  _prompt_paradox_current_bg="$1"
+  if [[ $http_proxy ]]; then
+    _prompt_paradox_current_bg="${_prompt_paradox_http_seprator}$1"
+  else
+    _prompt_paradox_current_bg="$1"
+  fi
   [[ -n "$3" ]] && print -n "$3"
 }
 
@@ -46,21 +50,38 @@ function prompt_paradox_end_segment {
 }
 
 function prompt_paradox_build_prompt {
-  prompt_paradox_start_segment black default '%(?::%F{red}✘ )%(!:%F{yellow}⚡ :)%(1j:%F{cyan}⚙ :)%F{blue}%n%F{red}@%F{green}%m%f'
-  prompt_paradox_start_segment blue black '$_prompt_paradox_pwd'
+
+  if [[ -n "$http_proxy" ]]; then
+    prompt_paradox_start_segment black blue 'HTTP '
+  fi
+
+  if [[ -n "$DOCKER_HOST" ]]; then
+    HOSTINFO=`echo $DOCKER_HOST | awk -F'//' '{print $2}' | awk -F. '{print $1"."$3"."$4}'`
+    prompt_paradox_start_segment black blue "${HOSTINFO} "
+  fi
+
+  prompt_paradox_start_segment black default '%(?::%F{red}✘ )%(!:%F{yellow}⚡ :)%(1j:%F{cyan}⚙ :)%F{yellow}%n%F{red}@%F{green}%m%f'
+  prompt_paradox_start_segment yellow black '$_prompt_paradox_pwd'
 
   if [[ -n "$git_info" ]]; then
     prompt_paradox_start_segment green black '${(e)git_info[ref]}${(e)git_info[status]}'
   fi
 
-  if [[ -n "$python_info" ]]; then
-    prompt_paradox_start_segment white black '${(e)python_info[virtualenv]}'
-  fi
-
   prompt_paradox_end_segment
 }
 
-prompt_paradox_print_elapsed_time() {
+function prompt_paradox_pwd {
+  local pwd="${PWD/#$HOME/~}"
+
+  if [[ "$pwd" == (#m)[/~] ]]; then
+    _prompt_paradox_pwd="$MATCH"
+    unset MATCH
+  else
+    _prompt_paradox_pwd="${${${${(@j:/:M)${(@s:/:)pwd}##.#?}:h}%/}//\%/%%}/${${pwd:t}//\%/%%}"
+  fi
+}
+
+function prompt_paradox_print_elapsed_time {
   local end_time=$(( SECONDS - _prompt_paradox_start_time ))
   local hours minutes seconds remainder
 
@@ -84,16 +105,11 @@ function prompt_paradox_precmd {
   unsetopt XTRACE KSH_ARRAYS
 
   # Format PWD.
-  _prompt_paradox_pwd=$(prompt-pwd)
+  prompt_paradox_pwd
 
   # Get Git repository information.
   if (( $+functions[git-info] )); then
     git-info
-  fi
-
-  # Get Python environment information.
-  if (( $+functions[python-info] )); then
-    python-info
   fi
 
   # Calculate and print the elapsed time.
@@ -118,7 +134,7 @@ function prompt_paradox_setup {
 
   # Set editor-info parameters.
   zstyle ':prezto:module:editor:info:completing' format '%B%F{red}...%f%b'
-  zstyle ':prezto:module:editor:info:keymap:primary' format '%B%F{blue}❯%f%b'
+  zstyle ':prezto:module:editor:info:keymap:primary' format '%B%F{yellow}❯%f%b'
   zstyle ':prezto:module:editor:info:keymap:primary:overwrite' format '%F{red}♺%f'
   zstyle ':prezto:module:editor:info:keymap:alternate' format '%B%F{red}❮%f%b'
 
@@ -128,7 +144,7 @@ function prompt_paradox_setup {
   zstyle ':prezto:module:git:info:added' format ' ✚'
   zstyle ':prezto:module:git:info:ahead' format ' ⬆'
   zstyle ':prezto:module:git:info:behind' format ' ⬇'
-  zstyle ':prezto:module:git:info:branch' format ' %b'
+  zstyle ':prezto:module:git:info:branch' format '↳ %b'
   zstyle ':prezto:module:git:info:commit' format '➦ %.7c'
   zstyle ':prezto:module:git:info:deleted' format ' ✖'
   zstyle ':prezto:module:git:info:dirty' format ' ⁝'
@@ -142,14 +158,11 @@ function prompt_paradox_setup {
     'ref' '$(coalesce "%b" "%p" "%c")' \
     'status' '%s%D%A%B%S%a%d%m%r%U%u'
 
-  # %v - virtualenv name.
-  zstyle ':prezto:module:python:info:virtualenv' format 'virtualenv:%v'
-
   # Define prompts.
   PROMPT='
 ${(e)$(prompt_paradox_build_prompt)}
  ${editor_info[keymap]} '
-  RPROMPT='%F{blue}[%F{green}%D{%H:%M:%S}%F{blue}]%f'
+  RPROMPT='%F{yellow}[%F{blue}%D{%H:%M:%S}%F{yellow}]%f'
   SPROMPT='zsh: correct %F{red}%R%f to %F{green}%r%f [nyae]? '
 }
 

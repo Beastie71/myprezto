@@ -71,14 +71,21 @@ function prompt_paradox_build_prompt {
 }
 
 function prompt_paradox_pwd {
-  local pwd="${PWD/#$HOME/~}"
 
+if zstyle -m ':prezto:module:prompt' pwd-length 'full'; then
+
+  local pwd=`pwd`
+  _prompt_paradox_pwd="${pwd}"
+else
+
+  local pwd="${PWD/#$HOME/~}"
   if [[ "$pwd" == (#m)[/~] ]]; then
     _prompt_paradox_pwd="$MATCH"
     unset MATCH
   else
     _prompt_paradox_pwd="${${${${(@j:/:M)${(@s:/:)pwd}##.#?}:h}%/}//\%/%%}/${${pwd:t}//\%/%%}"
   fi
+fi
 }
 
 function prompt_paradox_print_elapsed_time {

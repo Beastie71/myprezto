@@ -219,6 +219,11 @@ setopt HIST_IGNORE_ALL_DUPS
 setopt INC_APPEND_HISTORY
 
 unsetopt sharehistory
+if [ -x /usr/local/bin/gstat ] ; then
+  STAT="/usr/local/bin/gstat"
+else
+  STAT="stat"
+fi
 
 function sshnp() {
 

@@ -225,6 +225,10 @@ else
   STAT="stat"
 fi
 
+if [ -e ~/.aws/credentials ] ; then
+  DOAWS=true
+fi
+
 function sshnp() {
 
   if [ -n "$1" ];
